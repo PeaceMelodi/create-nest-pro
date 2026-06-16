@@ -1,0 +1,4 @@
+{
+  "@nestjs/mongoose": "^10.0.10",
+  "mongoose": "^8.4.0"
+}
