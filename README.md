@@ -1,3 +1,15 @@
+<h3 align="center">Get started instantly with one command</h3>
+
+<p align="center">
+
+```bash
+npx create-nest-pro
+```
+
+</p>
+
+---
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="80" alt="NestJS Logo" /></a>
 </p>

@@ -1,14 +1,11 @@
 {
   "name": "create-nest-pro",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The fastest way to scaffold a production ready NestJS project.",
   "main": "index.js",
   "type": "module",
   "bin": {
     "create-nest-pro": "bin/index.js"
-  },
-  "scripts": {
-    "postinstall": "node bin/index.js"
   },
   "files": [
     "bin",
