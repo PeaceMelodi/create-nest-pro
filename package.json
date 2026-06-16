@@ -1,11 +1,14 @@
 {
   "name": "create-nest-pro",
-  "version": "1.0.0",
-  "description": "The fastest way to scaffold a production-ready NestJS project.",
+  "version": "1.0.1",
+  "description": "The fastest way to scaffold a production ready NestJS project.",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "create-nest-pro": "./bin/index.js"
+    "create-nest-pro": "bin/index.js"
+  },
+  "scripts": {
+    "postinstall": "node bin/index.js"
   },
   "files": [
     "bin",
@@ -18,7 +21,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PeaceMelodi/create-nest-pro"
+    "url": "git+https://github.com/PeaceMelodi/create-nest-pro.git"
   },
   "keywords": [
     "nestjs",
