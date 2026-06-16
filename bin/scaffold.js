@@ -4,8 +4,6 @@ import { execSync } from 'child_process';
 import chalk from 'chalk';
 import https from 'https';
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
 function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
@@ -66,15 +64,12 @@ async function resolveLatestVersions(depsObject) {
   return resolved;
 }
 
-// ─── Main scaffolding function ───────────────────────────────────────────────
-
 export async function scaffold(answers) {
   const { projectName, packageManager, database, useDocker, useSwagger } = answers;
 
   const templatesDir = getTemplatesDir();
   const projectDir = path.join(process.cwd(), projectName);
 
-  // ── 1. Check project folder doesn't already exist ──────────────────────────
   if (fs.existsSync(projectDir)) {
     console.log(chalk.red(`\n✖ Folder "${projectName}" already exists. Please choose a different project name.\n`));
     process.exit(1);
@@ -82,7 +77,6 @@ export async function scaffold(answers) {
 
   console.log(chalk.cyan('\n⚙  Scaffolding your project...\n'));
 
-  // ── 2. Copy base templates ──────────────────────────────────────────────────
   copyDir(path.join(templatesDir, 'base'), projectDir);
 
   fs.renameSync(
@@ -90,13 +84,11 @@ export async function scaffold(answers) {
     path.join(projectDir, 'package.json')
   );
 
-  // ── 3. Build final package.json with latest versions ───────────────────────
   const packageJson = readJson(path.join(projectDir, 'package.json'));
   packageJson.name = projectName;
 
   const dbKey = database.toLowerCase();
 
-  // Collect all extra dependencies
   const dbDeps = readJson(path.join(templatesDir, 'database', dbKey, 'dependencies.json'));
   let extraDeps = { ...dbDeps };
 
@@ -105,7 +97,6 @@ export async function scaffold(answers) {
     extraDeps = { ...extraDeps, ...swaggerDeps };
   }
 
-  // Fetch latest versions for ALL dependencies (base + extra)
   console.log(chalk.cyan('⚙  Fetching latest package versions...\n'));
 
   const [latestBaseDeps, latestBaseDevDeps, latestExtraDeps] = await Promise.all([
@@ -119,13 +110,11 @@ export async function scaffold(answers) {
 
   writeFile(path.join(projectDir, 'package.json'), JSON.stringify(packageJson, null, 2));
 
-  // ── 4. Copy database module ─────────────────────────────────────────────────
   fs.copyFileSync(
     path.join(templatesDir, 'database', dbKey, 'database.module.ts'),
     path.join(projectDir, 'src', 'database.module.ts')
   );
 
-  // ── 5. Update app.module.ts to import DatabaseModule ───────────────────────
   const appModulePath = path.join(projectDir, 'src', 'app.module.ts');
   let appModule = fs.readFileSync(appModulePath, 'utf8');
   appModule = appModule.replace(
@@ -138,14 +127,12 @@ export async function scaffold(answers) {
   );
   fs.writeFileSync(appModulePath, appModule, 'utf8');
 
-  // ── 6. Copy main.ts (Swagger or plain) ─────────────────────────────────────
   const mainTsSrc = useSwagger
     ? path.join(templatesDir, 'swagger', 'main.ts')
     : path.join(templatesDir, 'no-swagger', 'main.ts');
 
   fs.copyFileSync(mainTsSrc, path.join(projectDir, 'src', 'main.ts'));
 
-  // ── 7. Build and write .env and .env.example ───────────────────────────────
   const baseEnv = `NODE_ENV=development\nPORT=3000\n`;
   const dbEnvPartial = fs.readFileSync(
     path.join(templatesDir, 'database', dbKey, 'env.partial'),
@@ -156,7 +143,6 @@ export async function scaffold(answers) {
   writeFile(path.join(projectDir, '.env'), finalEnv);
   writeFile(path.join(projectDir, '.env.example'), finalEnv);
 
-  // ── 8. Docker ───────────────────────────────────────────────────────────────
   if (useDocker) {
     fs.copyFileSync(
       path.join(templatesDir, 'docker', 'Dockerfile'),
@@ -168,14 +154,12 @@ export async function scaffold(answers) {
     );
   }
 
-  // ── 9. Install dependencies ─────────────────────────────────────────────────
   console.log(chalk.cyan(`⚙  Installing dependencies with ${packageManager}...\n`));
   execSync(`${packageManager} install`, {
     cwd: projectDir,
     stdio: 'inherit',
   });
 
-  // ── 10. Done ────────────────────────────────────────────────────────────────
   console.log(chalk.green('\n✔ Your project is ready.\n'));
   console.log(chalk.white(`  cd ${projectName}`));
   console.log(chalk.white(`  ${packageManager} run start:dev`));
