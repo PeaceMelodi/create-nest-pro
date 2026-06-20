@@ -3,7 +3,7 @@
 <p align="center">
 
 ```bash
-npx create-nest-pro
+npx create-nest-pro@latest
 ```
 
 </p>
@@ -45,7 +45,7 @@ Every serious NestJS developer always needs TypeScript, ESLint, Prettier, enviro
 ## Usage
 
 ```bash
-npx create-nest-pro
+npx create-nest-pro@latest
 ```
 
 No installation required. Just run the command and answer five questions.
