@@ -1,6 +1,6 @@
 {
   "name": "create-nest-pro",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The fastest way to scaffold a production ready NestJS project.",
   "main": "index.js",
   "type": "module",
