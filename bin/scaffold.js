@@ -34,6 +34,12 @@ function getTemplatesDir() {
   );
 }
 
+function getNodeMajorVersion() {
+  const version = process.version;
+  const major = parseInt(version.replace('v', '').split('.')[0], 10);
+  return major;
+}
+
 function fetchLatestVersion(packageName) {
   return new Promise((resolve) => {
     const url = `https://registry.npmjs.org/${packageName}/latest`;
@@ -104,6 +110,9 @@ export async function scaffold(answers) {
     resolveLatestVersions(packageJson.devDependencies),
     resolveLatestVersions(extraDeps),
   ]);
+
+  const nodeMajor = getNodeMajorVersion();
+  latestBaseDevDeps['@types/node'] = `^${nodeMajor}`;
 
   packageJson.dependencies = { ...latestBaseDeps, ...latestExtraDeps };
   packageJson.devDependencies = { ...latestBaseDevDeps };
